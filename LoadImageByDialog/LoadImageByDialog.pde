@@ -1,27 +1,35 @@
 PImage img = null;
 String myFilePath = "";
 
-int wh = 16;
-int he = 38;
-
 void setup() {
   frame.setResizable(true);
   selectInput("Select a file to process:", "fileSelected");
+  interrupt();
+  img = loadImage(myFilePath);
 }
 
 void draw(){
-  if(myFilePath != "") img = loadImage(myFilePath);
+  imgLoad();
+}
+
+void imgLoad(){
   if(img != null){
-    frame.setSize(img.width + wh, img.height + he);   
+    String os = System.getProperty("os.name");
+    if(os.substring(0, 3).equals("Win")){
+      int wh = 16, he = 38;
+      frame.setSize(img.width + wh, img.height + 38);   
+    }
+    else frame.setSize(img.width, img.height);   
     image(img, 0, 0);  
   }
 }
 
+void interrupt() {
+  while(myFilePath == "") noLoop();
+  loop();
+}
+
 void fileSelected(File selection) {
-  if (selection == null){
-    println("Window was closed or the user hit cancel.");
-  } 
-  else{
-    myFilePath = selection.getAbsolutePath();
-  }
+  if(selection == null) println("Window was closed or the user hit cancel.");
+  else myFilePath = selection.getAbsolutePath();
 }
